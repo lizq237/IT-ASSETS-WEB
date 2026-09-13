@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Base de datos Relacional (Inventario y Usuarios)
+  postgres:
+    image: postgres:16
+    container_name: fic_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: inventario_fic
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secretpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgsql_data:/var/lib/postgresql/data
+
+  # Base de datos No Relacional (Tickets y Reportes)
+  mongo:
+    image: mongo:7.0
+    container_name: fic_mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: secretpassword
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  # Caché en Memoria (Optimización)
+  redis:
+    image: redis:alpine
+    container_name: fic_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgsql_data:
+  mongo_data:
