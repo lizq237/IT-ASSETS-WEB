@@ -1,59 +1,70 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# IT Asset Management - Ecosistema de Desarrollo (Facultad de Informática Culiacán)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Este repositorio contiene la arquitectura completa del proyecto: infraestructura de bases de datos (Docker), API (Laravel) y cliente web (React). 
 
-## About Laravel
+## 1. Verificación de Requisitos Previos
+Antes de clonar el proyecto, abre tu terminal (PowerShell o CMD) y verifica que tienes las siguientes herramientas instaladas ejecutando los comandos indicados. Si algún comando marca error, descarga la herramienta desde su enlace oficial.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+* **Git** 
+  * *Verificar:* Ejecuta `git --version`
+  * *Descargar:* [git-scm.com](https://git-scm.com/downloads)
+* **Docker Desktop**
+  * *Verificar:* Ejecuta `docker --version`. Asegúrate también de tener WSL2 actualizado ejecutando `wsl --update` y de tener la virtualización activada en la BIOS de tu computadora.
+  * *Descargar:* [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/)
+* **Node.js (para React)**
+  * *Verificar:* Ejecuta `node -v` y `npm -v`
+  * *Descargar:* [nodejs.org](https://nodejs.org/) (Descarga la versión LTS)
+* **PHP 8.2+ y Composer (XAMPP)**
+  * *Verificar PHP:* Ejecuta `php -v` (Debe ser versión 8.2 o superior). Si no lo tienes, descarga [XAMPP](https://www.apachefriends.org/es/index.html).
+  * *Verificar Composer:* Ejecuta `composer -V`. Si no lo tienes, descárgalo en [getcomposer.org](https://getcomposer.org/download/).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### ⚠️ Configuración Obligatoria de PHP (XAMPP)
+Laravel necesita comunicarse con PostgreSQL y MongoDB. Sigue estos pasos exactos antes de continuar:
+1. Abre tu archivo `C:\xampp\php\php.ini`.
+2. **Para PostgreSQL:** Busca la línea `;extension=pdo_pgsql` y bórra el punto y coma (`;`) al inicio para activarla. Haz lo mismo con `;extension=pgsql`.
+3. **Para MongoDB:** Necesitas descargar el traductor interno. 
+   * Ve a [PECL MongoDB](https://pecl.php.net/package/mongodb) y descarga el archivo `.zip` DLL para tu versión exacta de PHP (Thread Safe, x64).
+   * Extrae el archivo `php_mongodb.dll` y pégalo en `C:\xampp\php\ext\`.
+   * En tu archivo `php.ini`, agrega la línea `extension=mongodb` en la sección de extensiones.
+4. Guarda el archivo y reinicia tu terminal.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 2. Levantar la Infraestructura
+Clona el repositorio y enciende los motores de bases de datos en segundo plano:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```bash
+git clone [https://gitlab.com/it-asset-management-group1/it-asset-management-project.git](https://gitlab.com/it-asset-management-group1/it-asset-management-project.git)
+cd it-asset-management-project
+docker compose up -d
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+> **Nota:** Abre la aplicación de Docker Desktop y verifica que los contenedores de PostgreSQL, MongoDB y Redis tengan el indicador verde de encendido antes de avanzar.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 3. Configurar el Backend (Laravel)
+Abre una terminal nueva, entra a la carpeta de la API y descarga el núcleo del framework:
 
-### Premium Partners
+```bash
+cd api-backend
+composer install
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Duplica el archivo `.env.example`, renómbralo exactamente a `.env` y actualiza las variables `DB_*` y `MONGODB_*` con las credenciales locales de Docker. Finalmente, prepara tu base de datos:
 
-## Contributing
+```bash
+php artisan key:generate
+php artisan migrate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 4. Configurar el Frontend (React)
+Abre una terminal nueva en la raíz del proyecto, descarga los paquetes de la interfaz y levanta el servidor de desarrollo local:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+cd frontend
+npm install
+npm run dev
+```
