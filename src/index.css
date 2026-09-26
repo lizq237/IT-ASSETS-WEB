@@ -1,3 +1,24 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* ────────────────────────────────────────────────────────────────
+   Paleta SysBase
+   ──────────────────────────────────────────────────────────────── */
+@theme {
+  --color-sysbase-black: #000000;
+  --color-sysbase-dark: #233D4D;
+  --color-sysbase-orange: #FE7F2D;
+  --color-sysbase-orange-dark: #D9661F;
+  --color-sysbase-gray: #EAECF0;
+  --color-sysbase-white: #ffffff;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-sysbase-gray);
+  color: var(--color-sysbase-dark);
+}
