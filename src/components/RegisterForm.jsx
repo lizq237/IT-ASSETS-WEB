@@ -28,7 +28,7 @@ export default function RegisterForm({ onSuccess }) {
         setSuccess('');
 
         try {
-            const { data } = await api.post('/users', form);
+            const { data } = await api.post('/register-tenant', form); 
             setSuccess('Empresa y usuario registrados correctamente.');
             setForm(EMPTY);
             onSuccess?.(data);

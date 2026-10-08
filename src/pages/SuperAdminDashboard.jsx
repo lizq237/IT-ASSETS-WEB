@@ -187,7 +187,7 @@ export default function SuperAdminDashboard() {
                     <tr className="border-b border-slate-100 bg-slate-50/50">
                     <th className="w-20 px-6 py-4 text-[10px] font-semibold uppercase tracking-wider text-slate-400">ID</th>
                     <th className="px-6 py-4 text-[10px] font-semibold uppercase tracking-wider text-slate-400">Nombre</th>
-                    <th className="w-40 px-6 py-4 text-[10px] font-semibold uppercase tracking-wider text-slate-400">Correo</th>
+                    <th className="w-40 px-6 py-4 text-[10px] font-semibold uppercase tracking-wider text-slate-400">RFC</th>
                     <th className="w-32 px-6 py-4 text-[10px] font-semibold uppercase tracking-wider text-slate-400">Usuarios</th>
                     <th className="w-40 px-6 py-4 text-[10px] font-semibold uppercase tracking-wider text-slate-400">Alta</th>
                     <th className="w-16 px-6 py-4" />
@@ -196,8 +196,8 @@ export default function SuperAdminDashboard() {
                                 <tbody className="divide-y divide-slate-100">
                     {organizations.map((org) => {
                         // Mapeo seguro de variables
-                        const nombreEmpresa = org.empresa_nombre || org.name || 'Sin Nombre';
-                        const identificador = org.rfc || org.email || '—';
+                        const nombreEmpresa = org.company_name || 'Sin Nombre';
+                        const identificador = org.RFC || '—';
                         const fechaFormateada = org.created_at 
                             ? new Date(org.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
                             : '01 oct 2026';
