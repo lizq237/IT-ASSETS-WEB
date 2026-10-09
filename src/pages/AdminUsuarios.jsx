@@ -1,3 +1,4 @@
+import { Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import DashboardLayout from '../components/layout/DashboardLayout';
@@ -52,6 +53,21 @@ export default function AdminUsuarios() {
     }, []);
 
     const [mostrarModalUsuarios, setMostrarModalUsuarios] = useState(false);
+
+    const eliminarUsuario = async (id) => {
+        const confirmacion = window.confirm('¿Estás seguro de que deseas eliminar este usuario?');
+        if (!confirmacion) return;
+
+        try {
+            await api.delete(`/users/${id}`);
+            toast.success('Usuario eliminado correctamente.');
+            cargarUsuarios(); // recargar lista de usuarios
+        } catch (error) {
+            toast.error('Error al eliminar usuario.');
+            console.error('Error al eliminar usuario:', error);
+        }
+    };
+
 
 
   return (
@@ -162,6 +178,14 @@ export default function AdminUsuarios() {
                                 <td className="px-6 py-4 font-semibold text-slate-700">{usuario.name}</td>
                                 <td className="px-6 py-4">{usuario.email}</td>
                                 <td className="px-6 py-4 capitalize">{usuario.role}</td>
+                                <td className="px-6 py-4">
+                                    <button
+                                        onClick={() => eliminarUsuario(usuario.id)}
+                                        className="text-red-500 hover:text-red-700"
+                                    >
+                                        <Trash2 className="w-5 h-5" />
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
