@@ -1,13 +1,13 @@
 import {
-    CheckCircle2,
-    ClipboardCheck,
-    ClipboardList,
-    LayoutDashboard,
-    Package,
-    PackageCheck,
-    Settings,
-    Users,
-    Wrench,
+  CheckCircle2,
+  ClipboardCheck,
+  ClipboardList,
+  LayoutDashboard,
+  Package,
+  PackageCheck,
+  Settings,
+  Users,
+  Wrench,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import DashboardLayout from '../components/layout/DashboardLayout';
@@ -32,7 +32,10 @@ export default function AdminTIDashboard() {
   useEffect(() => {
     api
       .get('/dashboard/resumen')
-      .then(({ data }) => setSummary(data.data))
+      .then((response) => {
+          console.log("Esto manda el backend:", response.data); 
+          setSummary(response.data.data); 
+      })
       .catch(() => setError('No se pudo cargar la información del panel.'))
       .finally(() => setLoading(false));
   }, []);

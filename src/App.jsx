@@ -2,13 +2,13 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
 import AdminTIDashboard, { ADMIN_MENU } from './pages/AdminTIDashboard';
+import AdminUsuarios from './pages/AdminUsuarios';
 import ComingSoon from './pages/ComingSoon';
 import LoginPage from './pages/LoginPage';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 
 const ADMIN_PLACEHOLDERS = [
   { path: 'inventario',    title: 'Inventario' },
-  { path: 'usuarios',      title: 'Usuarios' },
   { path: 'asignaciones',  title: 'Asignaciones' },
   { path: 'mantenimiento', title: 'Mantenimiento' },
   { path: 'ajustes',       title: 'Configuración' },
@@ -57,6 +57,15 @@ export default function App() {
               }
             />
           ))}
+
+          <Route
+            path="/admin/usuarios"
+            element={
+              <ProtectedRoute roles={['admin_ti']}>
+                <AdminUsuarios /> 
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
