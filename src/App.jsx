@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './contexts/AuthContext';
+import AdminCategorias from './pages/AdminCategorias';
 import AdminTIDashboard, { ADMIN_MENU } from './pages/AdminTIDashboard';
 import AdminUsuarios from './pages/AdminUsuarios';
 import ComingSoon from './pages/ComingSoon';
@@ -8,10 +9,10 @@ import LoginPage from './pages/LoginPage';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
 
 const ADMIN_PLACEHOLDERS = [
-  { path: 'inventario',    title: 'Inventario' },
-  { path: 'asignaciones',  title: 'Asignaciones' },
-  { path: 'mantenimiento', title: 'Mantenimiento' },
-  { path: 'ajustes',       title: 'Configuración' },
+  { path: 'inventario',    title: 'Inventario',      roles: ['admin_ti', 'tecnico'] },
+  { path: 'asignaciones',  title: 'Asignaciones',    roles: ['admin_ti', 'tecnico'] },
+  { path: 'mantenimiento', title: 'Mantenimiento',   roles: ['admin_ti', 'tecnico'] },
+  { path: 'ajustes',       title: 'Configuración',   roles: ['admin_ti'] },
 ];
 
 export default function App() {
@@ -35,19 +36,18 @@ export default function App() {
           <Route
             path="/admin"
             element={
-              <ProtectedRoute roles={['admin_ti']}>
+              <ProtectedRoute roles={['admin_ti', 'tecnico']}>
                 <AdminTIDashboard />
               </ProtectedRoute>
             }
           />
 
-          {/* Sub-rutas placeholder hasta Sprint 2 */}
-          {ADMIN_PLACEHOLDERS.map(({ path, title }) => (
+          {ADMIN_PLACEHOLDERS.map(({ path, title, roles }) => (
             <Route
               key={path}
               path={`/admin/${path}`}
               element={
-                <ProtectedRoute roles={['admin_ti']}>
+                <ProtectedRoute roles={roles}>
                   <ComingSoon
                     items={ADMIN_MENU}
                     brandLabel="Administrador de TI"
@@ -62,7 +62,16 @@ export default function App() {
             path="/admin/usuarios"
             element={
               <ProtectedRoute roles={['admin_ti']}>
-                <AdminUsuarios /> 
+                <AdminUsuarios />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/categorias"
+            element={
+              <ProtectedRoute roles={['admin_ti', 'tecnico']}>
+                <AdminCategorias />
               </ProtectedRoute>
             }
           />

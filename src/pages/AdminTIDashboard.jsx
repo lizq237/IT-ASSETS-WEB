@@ -1,13 +1,14 @@
 import {
-  CheckCircle2,
-  ClipboardCheck,
-  ClipboardList,
-  LayoutDashboard,
-  Package,
-  PackageCheck,
-  Settings,
-  Users,
-  Wrench,
+    CheckCircle2,
+    ClipboardCheck,
+    ClipboardList,
+    LayoutDashboard,
+    Package,
+    PackageCheck,
+    Settings,
+    Tag,
+    Users,
+    Wrench
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import DashboardLayout from '../components/layout/DashboardLayout';
@@ -16,12 +17,13 @@ import api from '../services/api';
 
 /* Menú compartido con ComingSoon */
 export const ADMIN_MENU = [
-  { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/admin/inventario', label: 'Inventario', icon: Package },
-  { to: '/admin/usuarios', label: 'Usuarios', icon: Users },
-  { to: '/admin/asignaciones', label: 'Asignaciones', icon: ClipboardCheck },
-  { to: '/admin/mantenimiento', label: 'Mantenimiento', icon: Wrench },
-  { to: '/admin/ajustes', label: 'Configuración', icon: Settings },
+  { to: '/admin',                 label: 'Dashboard',     icon: LayoutDashboard, end: true,  roles: ['admin_ti', 'tecnico'] },
+  { to: '/admin/inventario',      label: 'Inventario',    icon: Package,                     roles: ['admin_ti', 'tecnico'] },
+  { to: '/admin/categorias',      label: 'Categorías',    icon: Tag,                         roles: ['admin_ti', 'tecnico'] },
+  { to: '/admin/usuarios',        label: 'Usuarios',      icon: Users,                       roles: ['admin_ti'] },
+  { to: '/admin/asignaciones',    label: 'Asignaciones',  icon: ClipboardCheck,              roles: ['admin_ti', 'tecnico'] },
+  { to: '/admin/mantenimiento',   label: 'Mantenimiento', icon: Wrench,                      roles: ['admin_ti', 'tecnico'] },
+  { to: '/admin/ajustes',         label: 'Configuración', icon: Settings,                    roles: ['admin_ti'] },
 ];
 
 export default function AdminTIDashboard() {
