@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 function homeForRole(role) {
   if (role === 'super_admin') return '/super-admin';
   if (role === 'admin_ti') return '/admin';
+  if (role === 'tecnico') return '/admin';
   return '/login';
 }
 
@@ -33,6 +34,7 @@ export default function LoginPage() {
     try {
       await login(email, password);
       /* El useEffect detecta el cambio de "user" y navega. */
+      setLoading(false);
     } catch (err) {
       if (err.response?.status === 401) {
         setError('Credenciales incorrectas.');

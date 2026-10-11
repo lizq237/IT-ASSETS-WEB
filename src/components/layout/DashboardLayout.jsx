@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 
@@ -10,11 +11,19 @@ export default function DashboardLayout({
   children,
 }) {
   const [collapsed, setCollapsed] = useState(false);
+  const { user } = useAuth();
+
+  /* Filtra los items según el rol del usuario. Si un item no declara
+     `roles`, se asumir que es visible para todos. */
+  const visibleItems = items.filter((item) => {
+    if (!item.roles) return true;
+    return item.roles.includes(user?.role);
+  });
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 text-slate-800">
       <Sidebar
-        items={items}
+        items={visibleItems}
         collapsed={collapsed}
         onToggle={() => setCollapsed((v) => !v)}
         brandLabel={brandLabel}

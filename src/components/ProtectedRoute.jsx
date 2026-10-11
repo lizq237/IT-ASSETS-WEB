@@ -20,7 +20,9 @@ export default function ProtectedRoute({ children, roles }) {
   if (roles && !roles.includes(user.role)) {
     /* Autenticado pero sin permiso: lo manda a su panel propio. */
     if (user.role === 'super_admin') return <Navigate to="/super-admin" replace />;
-    if (user.role === 'admin_ti') return <Navigate to="/admin" replace />;
+    if (user.role === 'admin_ti' || user.role === 'tecnico') {
+      return <Navigate to="/admin" replace />;
+    }
     return <Navigate to="/login" replace />;
   }
 
