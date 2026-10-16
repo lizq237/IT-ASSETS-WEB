@@ -7,9 +7,10 @@ import AdminUsuarios from './pages/AdminUsuarios';
 import ComingSoon from './pages/ComingSoon';
 import LoginPage from './pages/LoginPage';
 import SuperAdminDashboard from './pages/SuperAdminDashboard';
+import InventoryPage from './pages/InventoryPage';
+import NewInventoryItemPage from './pages/NewInventoryItemPage';
 
 const ADMIN_PLACEHOLDERS = [
-  { path: 'inventario',    title: 'Inventario',      roles: ['admin_ti', 'tecnico'] },
   { path: 'asignaciones',  title: 'Asignaciones',    roles: ['admin_ti', 'tecnico'] },
   { path: 'mantenimiento', title: 'Mantenimiento',   roles: ['admin_ti', 'tecnico'] },
   { path: 'ajustes',       title: 'Configuración',   roles: ['admin_ti'] },
@@ -72,6 +73,24 @@ export default function App() {
             element={
               <ProtectedRoute roles={['admin_ti', 'tecnico']}>
                 <AdminCategorias />
+              </ProtectedRoute>
+            }
+          />
+
+            <Route
+                path="/admin/inventario"
+                element={
+                  <ProtectedRoute roles={['admin_ti', 'tecnico']}>
+                    <InventoryPage />
+                  </ProtectedRoute>
+                }
+              />
+
+          <Route
+            path="/admin/inventario/nuevo"
+            element={
+              <ProtectedRoute roles={['admin_ti']}>
+                <NewInventoryItemPage />
               </ProtectedRoute>
             }
           />
