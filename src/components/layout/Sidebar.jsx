@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
-export default function Sidebar({ items, collapsed, onToggle, brandLabel }) {
+export default function Sidebar({ items, collapsed, onToggle, brandLabel }){
   return (
     <aside
       className={`relative flex h-full flex-col bg-sysbase-dark text-slate-300 transition-all duration-300 ${
@@ -52,7 +52,7 @@ export default function Sidebar({ items, collapsed, onToggle, brandLabel }) {
                   }
                   title={collapsed ? item.label : undefined}
                 >
-                  <Icon className="h-4 w-4 shrink-0" />
+                  <Icon className="h-4 w-4 shrink-0"/>
                   {!collapsed && <span>{item.label}</span>}
                 </NavLink>
               </li>
@@ -61,13 +61,8 @@ export default function Sidebar({ items, collapsed, onToggle, brandLabel }) {
         </ul>
       </nav>
 
-      {/* Botón colapsar — pegado a la orilla derecha del sidebar */}
-      <button
-        type="button"
-        onClick={onToggle}
-        className="absolute -right-3 top-20 flex h-7 w-7 items-center justify-center rounded-full border border-slate-600 bg-sysbase-dark text-slate-300 shadow-lg transition-colors hover:bg-sysbase-orange hover:text-white"
-        aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}
-      >
+      {/*Botón colapsar — pegado a la orilla derecha del sidebar*/}
+      <button type="button" onClick={onToggle} className="absolute -right-3 top-20 flex h-7 w-7 items-center justify-center rounded-full border border-slate-600 bg-sysbase-dark text-slate-300 shadow-lg transition-colors hover:bg-sysbase-orange hover:text-white" aria-label={collapsed ? 'Expandir menú' : 'Colapsar menú'}>
         {collapsed ? (
           <ChevronRight className="h-4 w-4" />
         ) : (

@@ -17,13 +17,12 @@ export default function ProtectedRoute({ children, roles }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (roles && !roles.includes(user.role)) {
-    /* Autenticado pero sin permiso: lo manda a su panel propio. */
-    if (user.role === 'super_admin') return <Navigate to="/super-admin" replace />;
-    if (user.role === 'admin_ti' || user.role === 'tecnico') {
-      return <Navigate to="/admin" replace />;
+  if(roles && !roles.includes(user.role)){
+    if(user.role === 'super_admin') return <Navigate to="/super-admin" replace/>;
+    if(user.role === 'admin_ti' || user.role === 'tecnico' || user.role === 'responsable'){
+      return <Navigate to="/admin" replace/>;
     }
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace/>;
   }
 
   return children;

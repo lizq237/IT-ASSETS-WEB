@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import LogoSysBase from '../components/LogoSysBase';
 import { useAuth } from '../contexts/AuthContext';
 
-function homeForRole(role) {
-  if (role === 'super_admin') return '/super-admin';
-  if (role === 'admin_ti') return '/admin';
-  if (role === 'tecnico') return '/admin';
+function homeForRole(role){
+  if(role === 'super_admin') return '/super-admin';
+  if(role === 'admin_ti') return '/admin';
+  if(role === 'tecnico') return '/admin';
+  if(role === 'responsable') return '/admin';
   return '/login';
 }
 
@@ -19,28 +20,28 @@ export default function LoginPage() {
   const { user, login } = useAuth();
   const navigate = useNavigate();
 
-  /* Si ya hay sesión activa, redirige según rol (evita visitar /login estando dentro). */
-  useEffect(() => {
-    if (user) {
+  /*Si ya hay sesión activa, redirige según rol (evita visitar /login estando dentro). */
+  useEffect(() =>{
+    if(user){
       navigate(homeForRole(user.role), { replace: true });
     }
   }, [user, navigate]);
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e){
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    try {
+    try{
       await login(email, password);
-      /* El useEffect detecta el cambio de "user" y navega. */
+      /*El useEffect detecta el cambio de "user" y navega.*/
       setLoading(false);
-    } catch (err) {
-      if (err.response?.status === 401) {
+    }catch (err){
+      if(err.response?.status === 401){
         setError('Credenciales incorrectas.');
-      } else if (err.response?.status === 422) {
+      }else if(err.response?.status === 422){
         setError('Revisa el formato del correo y la contraseña.');
-      } else {
+      }else{
         setError('No se pudo conectar con el servidor. Intenta más tarde.');
       }
       setLoading(false);
@@ -70,48 +71,20 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <div>
-              <label
-                htmlFor="email"
-                className="mb-1 block text-sm font-medium text-sysbase-dark"
-              >
+              <label htmlFor="email" className="mb-1 block text-sm font-medium text-sysbase-dark">
                 Correo electrónico
               </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-                placeholder="correo@correo.com"
-                className="w-full rounded-lg border border-transparent bg-sysbase-gray px-4 py-3 text-sm text-sysbase-dark transition focus:border-sysbase-orange focus:bg-sysbase-white focus:outline-none focus:ring-4 focus:ring-sysbase-orange/15"
-              />
+              <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" placeholder="correo@correo.com" className="w-full rounded-lg border border-transparent bg-sysbase-gray px-4 py-3 text-sm text-sysbase-dark transition focus:border-sysbase-orange focus:bg-sysbase-white focus:outline-none focus:ring-4 focus:ring-sysbase-orange/15"/>
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="mb-1 block text-sm font-medium text-sysbase-dark"
-              >
+              <label htmlFor="password" className="mb-1 block text-sm font-medium text-sysbase-dark">
                 Contraseña
               </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-                placeholder="••••••••"
-                className="w-full rounded-lg border border-transparent bg-sysbase-gray px-4 py-3 text-sm text-sysbase-dark transition focus:border-sysbase-orange focus:bg-sysbase-white focus:outline-none focus:ring-4 focus:ring-sysbase-orange/15"
-              />
+              <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" placeholder="••••••••" className="w-full rounded-lg border border-transparent bg-sysbase-gray px-4 py-3 text-sm text-sysbase-dark transition focus:border-sysbase-orange focus:bg-sysbase-white focus:outline-none focus:ring-4 focus:ring-sysbase-orange/15"/>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-full bg-sysbase-orange px-6 py-3 text-sm font-bold uppercase tracking-wide text-sysbase-white shadow-lg shadow-sysbase-orange/30 transition hover:bg-sysbase-orange-dark hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60"
-            >
+            <button type="submit" disabled={loading} className="w-full rounded-full bg-sysbase-orange px-6 py-3 text-sm font-bold uppercase tracking-wide text-sysbase-white shadow-lg shadow-sysbase-orange/30 transition hover:bg-sysbase-orange-dark hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-60">
               {loading ? 'Ingresando...' : 'Ingresar'}
             </button>
           </form>

@@ -13,8 +13,7 @@ export default function DashboardLayout({
   const [collapsed, setCollapsed] = useState(false);
   const { user } = useAuth();
 
-  /* Filtra los items según el rol del usuario. Si un item no declara
-     `roles`, se asumir que es visible para todos. */
+  /*Filtra los items según el rol del usuario. Si un item no declara "roles",es visible para todos.*/
   const visibleItems = items.filter((item) => {
     if (!item.roles) return true;
     return item.roles.includes(user?.role);
@@ -22,15 +21,10 @@ export default function DashboardLayout({
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 text-slate-800">
-      <Sidebar
-        items={visibleItems}
-        collapsed={collapsed}
-        onToggle={() => setCollapsed((v) => !v)}
-        brandLabel={brandLabel}
-      />
+      <Sidebar items={visibleItems} collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)} brandLabel={brandLabel}/>
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        <Topbar pageTitle={pageTitle} />
+        <Topbar pageTitle={pageTitle}/>
 
         <main className="flex-1 overflow-y-auto p-6 md:p-8">
           {breadcrumb && (

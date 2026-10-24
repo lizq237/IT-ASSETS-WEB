@@ -5,10 +5,10 @@ import AdminCategorias from './pages/AdminCategorias';
 import AdminTIDashboard, { ADMIN_MENU } from './pages/AdminTIDashboard';
 import AdminUsuarios from './pages/AdminUsuarios';
 import ComingSoon from './pages/ComingSoon';
-import LoginPage from './pages/LoginPage';
-import SuperAdminDashboard from './pages/SuperAdminDashboard';
 import InventoryPage from './pages/InventoryPage';
+import LoginPage from './pages/LoginPage';
 import NewInventoryItemPage from './pages/NewInventoryItemPage';
+import SuperAdminDashboard from './pages/SuperAdminDashboard';
 
 const ADMIN_PLACEHOLDERS = [
   { path: 'asignaciones',  title: 'Asignaciones',    roles: ['admin_ti', 'tecnico'] },
@@ -37,7 +37,7 @@ export default function App() {
           <Route
             path="/admin"
             element={
-              <ProtectedRoute roles={['admin_ti', 'tecnico']}>
+              <ProtectedRoute roles={['admin_ti', 'tecnico', 'responsable']}>
                 <AdminTIDashboard />
               </ProtectedRoute>
             }
@@ -71,7 +71,7 @@ export default function App() {
           <Route
             path="/admin/categorias"
             element={
-              <ProtectedRoute roles={['admin_ti', 'tecnico']}>
+              <ProtectedRoute roles={['admin_ti', 'tecnico', 'responsable']}>
                 <AdminCategorias />
               </ProtectedRoute>
             }
@@ -80,7 +80,7 @@ export default function App() {
             <Route
                 path="/admin/inventario"
                 element={
-                  <ProtectedRoute roles={['admin_ti', 'tecnico']}>
+                  <ProtectedRoute roles={['admin_ti', 'tecnico', 'responsable']}>
                     <InventoryPage />
                   </ProtectedRoute>
                 }
