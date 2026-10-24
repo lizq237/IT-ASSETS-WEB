@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
-/* ────────────────────────────────────────────────────────────────
-   Paleta SysBase
-   ──────────────────────────────────────────────────────────────── */
+/*Paleta SysBase*/
 @theme {
   --color-sysbase-black: #000000;
   --color-sysbase-dark: #233D4D;
@@ -21,4 +19,47 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--color-sysbase-gray);
   color: var(--color-sysbase-dark);
+}
+
+/*Calendario / Fecha de compra en registrar equipo*/
+.react-datepicker-wrapper {
+  width: 100%;
+}
+.react-datepicker__input-container input {
+  width: 100%;
+}
+/*Popup del calendario */
+.react-datepicker {
+  font-family: inherit !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1) !important;
+  border-radius: 0.75rem !important;
+}
+/*Día seleccionado */
+.react-datepicker__day--selected, 
+.react-datepicker__day--in-selecting-range, 
+.react-datepicker__day--in-range {
+  background-color: #f97316 !important; /* Naranja SysBase */
+  border-radius: 0.375rem !important;
+}
+/*Día en hover */
+.react-datepicker__day:hover {
+  background-color: #ffedd5 !important; /* Naranja claro */
+  border-radius: 0.375rem !important;
+}
+/*Encabezado (Mes y Año) */
+.react-datepicker__header {
+  background-color: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-top-left-radius: 0.75rem !important;
+  border-top-right-radius: 0.75rem !important;
+}
+/*Día actual*/
+.react-datepicker__day--keyboard-selected {
+  background-color: #f97316 !important;
+  color: white !important;
+}
+/*Botón de borrar fecha */
+.react-datepicker__close-icon::after {
+  background-color: #94a3b8 !important;
 }
