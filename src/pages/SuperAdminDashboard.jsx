@@ -65,6 +65,9 @@ export default function SuperAdminDashboard() {
     }
 
     async function handleDelete(org) {
+        const confirm = window.confirm(`¿Estás seguro de que deseas eliminar la organización "${org.company_name}"? Esta acción no se puede deshacer.`
+        );
+        if (!confirm) return;
         setDeletingId(org.id);
         setTableError('');
         try {
@@ -236,6 +239,7 @@ export default function SuperAdminDashboard() {
                                 <td className="px-4 py-3 text-right">
                                     <button
                                         onClick={() => handleDelete(org)}
+                                        disabled={deletingId !== null}
                                         className="rounded-lg p-1.5 text-slate-400 transition hover:bg-red-50 hover:text-red-500"
                                         title="Eliminar organización"
                                     >

@@ -1,16 +1,16 @@
 import {
-    AlertTriangle,
-    CheckCircle2,
-    ClipboardCheck,
-    ClipboardList,
-    LayoutDashboard,
-    Package,
-    RefreshCw,
-    Settings,
-    Tag,
-    Trash2,
-    Users,
-    Wrench,
+  AlertTriangle,
+  CheckCircle2,
+  ClipboardCheck,
+  ClipboardList,
+  LayoutDashboard,
+  Package,
+  RefreshCw,
+  Settings,
+  Tag,
+  Trash2,
+  Users,
+  Wrench,
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -22,7 +22,7 @@ import api from '../services/api';
 export const ADMIN_MENU = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true, roles: ['admin_ti', 'tecnico', 'responsable'] },
   { to: '/admin/inventario', label: 'Inventario', icon: Package, roles: ['admin_ti', 'tecnico', 'responsable'] },
-  { to: '/admin/categorias', label: 'Categorías', icon: Tag, roles: ['admin_ti', 'tecnico', 'responsable'] },
+  { to: '/admin/categorias', label: 'Catálogos', icon: Tag, roles: ['admin_ti', 'tecnico', 'responsable'] },
   { to: '/admin/usuarios', label: 'Usuarios', icon: Users, roles: ['admin_ti'] },
   { to: '/admin/asignaciones', label: 'Asignaciones', icon: ClipboardCheck, roles: ['admin_ti', 'tecnico'] },
   { to: '/admin/mantenimiento', label: 'Mantenimiento', icon: Wrench, roles: ['admin_ti', 'tecnico'] },
@@ -146,7 +146,7 @@ export default function AdminTIDashboard(){
                 {equiposRecientes.map((eq) => (
                   <tr key={eq.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4 font-medium text-slate-800">{eq.code}</td>
-                    <td className="px-6 py-4">{eq.brand || '—'} / {eq.model}</td>
+                    <td className="px-6 py-4">{eq.brand?.name || '—'} / {eq.model}</td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize border ${
                         eq.status === 'activo' 

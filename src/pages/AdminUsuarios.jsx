@@ -63,7 +63,7 @@ export default function AdminUsuarios() {
             toast.success('Usuario eliminado correctamente.');
             cargarUsuarios(); // recargar lista de usuarios
         } catch (error) {
-            toast.error('Error al eliminar usuario.');
+            toast.error(error.response?.data?.message || 'Error al eliminar usuario.');
             console.error('Error al eliminar usuario:', error);
         }
     };

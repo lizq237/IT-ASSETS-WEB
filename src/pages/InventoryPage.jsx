@@ -1,4 +1,4 @@
-import { AlertTriangle, Search, SlidersHorizontal, Trash2, UserPlus, Wrench, X } from 'lucide-react';
+import { AlertTriangle, Search, SlidersHorizontal, Trash2, UserPlus, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { Link, useLocation } from 'react-router-dom';
@@ -43,7 +43,7 @@ export default function InventoryPage() {
     let res = equipos.filter(eq => 
       eq.code?.toLowerCase().includes(busqueda.toLowerCase()) || 
       eq.serial_number?.toLowerCase().includes(busqueda.toLowerCase()) || 
-      eq.brand?.toLowerCase().includes(busqueda.toLowerCase()) || 
+      eq.brand?.name?.toLowerCase().includes(busqueda.toLowerCase()) ||
       eq.model?.toLowerCase().includes(busqueda.toLowerCase())
     );
     if (orden === 'codigo_asc') res.sort((a, b) => a.code.localeCompare(b.code));
@@ -88,6 +88,26 @@ export default function InventoryPage() {
       toast.success('Equipo eliminado correctamente.'); setEquipoAEliminar(null); cargarEquipos();
     } catch { toast.error('Error al eliminar el equipo.'); } finally { setEliminando(false); }
   };
+//estado para saber si se está actualizando el estado de un equipo específico
+  const [actualizandoEstadoId, setActualizandoEstadoId] = useState(null);
+  const actualizarEstadoInline = async (equipo, nuevoEstado) => {
+    if (equipo.status === nuevoEstado) return; // Si el estado es el mismo, no hacemos nada
+    
+    setActualizandoEstadoId(equipo.id);
+    try {
+      await api.patch(`/assets/${equipo.id}/status`, { status: nuevoEstado });
+      toast.success('Estado actualizado correctamente.');
+      
+      // Actualizamos el estado localmente para que cambie de color al instante
+      setEquipos(equipos.map(eq => 
+        eq.id === equipo.id ? { ...eq, status: nuevoEstado } : eq
+      ));
+    } catch (err) { 
+      toast.error(err.response?.data?.message || 'Error al actualizar el estado.'); 
+    } finally { 
+      setActualizandoEstadoId(null); 
+    }
+  };
 
   return(
     <DashboardLayout items={ADMIN_MENU} brandLabel="Administrador de TI" breadcrumb="Gestión de activos" pageTitle="Inventario de equipos">
@@ -123,7 +143,7 @@ export default function InventoryPage() {
               <thead className="bg-slate-50 text-slate-600 border-b border-slate-100">
                 <tr>
                   <th className="px-5 py-3 text-xs uppercase tracking-wider">Código</th><th className="px-5 py-3 text-xs uppercase tracking-wider">Marca / Modelo</th>
-                  <th className="px-5 py-3 text-xs uppercase tracking-wider">Serie</th><th className="px-5 py-3 text-xs uppercase tracking-wider">Estado</th>
+                  <th className="px-5 py-3 text-xs uppercase tracking-wider">Serie</th><th className="px-5 py-3 text-xs uppercase tracking-wider text-center">Estado</th>
                   <th className="px-5 py-3 text-xs uppercase tracking-wider">Asignado a</th><th className="px-5 py-3 text-xs uppercase tracking-wider text-right">Acciones</th>
                 </tr>
               </thead>
@@ -131,11 +151,36 @@ export default function InventoryPage() {
                 {equiposFiltrados.map((equipo) => (
                   <tr key={equipo.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-5 py-3 font-medium text-slate-800">{equipo.code}</td>
-                    <td className="px-5 py-3">{equipo.brand || '—'} / {equipo.model}</td>
+                    <td className="px-5 py-3">{equipo.brand?.name || '—'} / {equipo.model}</td>
                     <td className="px-5 py-3">{equipo.serial_number || '—'}</td>
-                    <td className="px-5 py-3">
-                      <span className={`rounded-full px-3 py-1 text-xs font-medium capitalize border ${equipo.status === 'activo' ? 'bg-green-50 text-green-700 border-green-100' : equipo.status === 'mantenimiento' ? 'bg-orange-50 text-orange-700 border-orange-100' : 'bg-slate-100 text-slate-700 border-slate-200'}`}>{equipo.status}</span>
+                    
+                
+                    <td className="px-5 py-3 text-center">
+                      {(user?.role === 'admin_ti' || (user?.role === 'tecnico' && equipo.assigned_user_id === user?.id)) ? (
+                        <select
+                          value={equipo.status}
+                          onChange={(e) => actualizarEstadoInline(equipo, e.target.value)}
+                          disabled={actualizandoEstadoId === equipo.id}
+                          className={`border text-xs font-medium rounded-full px-3 py-1 outline-none cursor-pointer transition-colors appearance-none text-center
+                            ${equipo.status === 'activo' ? 'bg-green-50 text-green-700 border-green-200 focus:border-green-500' : 
+                              equipo.status === 'mantenimiento' ? 'bg-orange-50 text-orange-700 border-orange-200 focus:border-orange-500' : 
+                              'bg-slate-100 text-slate-700 border-slate-200 focus:border-slate-500'
+                            } ${actualizandoEstadoId === equipo.id ? 'opacity-50 cursor-wait' : ''}`}
+                        >
+                          <option value="activo">Activo</option>
+                          <option value="mantenimiento">Mantenimiento</option>
+                          <option value="baja">Dado de Baja</option>
+                        </select>
+                      ) : (
+                        <span className={`rounded-full px-3 py-1 text-xs font-medium capitalize border cursor-not-allowed
+                          ${equipo.status === 'activo' ? 'bg-green-50 text-green-700 border-green-100' : 
+                            equipo.status === 'mantenimiento' ? 'bg-orange-50 text-orange-700 border-orange-100' : 
+                            'bg-slate-100 text-slate-700 border-slate-200'}`}>
+                          {equipo.status}
+                        </span>
+                      )}
                     </td>
+
                     <td className="px-5 py-3">{equipo.assigned_user ? <span className="font-medium text-slate-700">{equipo.assigned_user.name}</span> : <span className="italic text-slate-400">Sin asignar</span>}</td>
                     <td className="px-5 py-3 text-right">
                       <div className="flex items-center justify-end gap-3">
@@ -147,7 +192,6 @@ export default function InventoryPage() {
                             <button onClick={() => setEquipoAEliminar(equipo)} className="text-slate-300 hover:text-red-600 transition-colors p-1" title="Eliminar equipo"><Trash2 className="w-4 h-4" /></button>
                           </>
                         )}
-                        {user?.role === 'tecnico' && <button onClick={() => abrirModalEstado(equipo)} className="inline-flex items-center gap-1 text-sm font-medium text-orange-500 hover:text-orange-700"><Wrench className="w-4 h-4" /> Cambiar estado</button>}
                         {user?.role === 'responsable' && <span className="text-slate-300 font-medium">—</span>}
                       </div>
                     </td>
@@ -159,7 +203,7 @@ export default function InventoryPage() {
         )}
       </div>
 
-      {/*Modal de asignar*/}
+      {/* Modal de asignar */}
       {modalAbierto && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md relative">
@@ -180,27 +224,7 @@ export default function InventoryPage() {
         </div>
       )}
 
-      {/*modal de estados*/}
-      {modalEstadoAbierto && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md relative">
-            <button onClick={() => setModalEstadoAbierto(false)} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"><X className="w-5 h-5"/></button>
-            <h2 className="text-xl font-bold mb-2 text-slate-800">Cambiar Estado del Equipo</h2>
-            <p className="text-sm text-slate-500 mb-5">Equipo: <strong>{equipoSeleccionado?.code}</strong></p>
-            <form onSubmit={manejarCambioEstado} className="flex flex-col gap-4">
-              <div className="flex flex-col gap-1">
-                <label className="text-sm font-medium text-slate-700">Nuevo estado operativo:</label>
-                <select required className="border border-slate-300 rounded-lg px-3 py-2 outline-none focus:border-orange-500" value={nuevoEstado} onChange={(e) => setNuevoEstado(e.target.value)}>
-                  <option value="activo">Activo</option><option value="mantenimiento">En Mantenimiento</option><option value="baja">Dado de Baja</option>
-                </select>
-              </div>
-              <button type="submit" disabled={actualizandoEstado} className="mt-2 bg-slate-800 text-white px-4 py-2.5 rounded-lg hover:bg-slate-900 font-semibold disabled:opacity-60 shadow-sm">{actualizandoEstado ? 'Guardando...' : 'Guardar Cambios'}</button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/*Modal deliminar*/}
+      {/* Modal de eliminar */}
       {equipoAEliminar && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md relative text-center">

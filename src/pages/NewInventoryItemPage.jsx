@@ -18,23 +18,34 @@ export default function NewInventoryItemPage(){
   const [categorias, setCategorias] = useState([]);
   const [guardando, setGuardando] = useState(false);
   const [errores, setErrores] = useState({});
+  const [marcas, setMarcas] = useState([]);
+  const [ubicaciones, setUbicaciones] = useState([]);
 
   const [form, setForm] = useState({
     category_id: '',
     code: '',
     serial_number: '',
-    brand: '',
+    brand_id: '',
     model: '',
-    location: '',
+    location_id: '',
     status: 'activo',
     purchase_date: null,
   });
 
   useEffect(() => {
-    api.get('/categories')
-      .then(({ data }) => setCategorias(data))
-      .catch(() => toast.error('Error al cargar las categorías'));
+    Promise.all([
+    api.get('/categories'),
+    api.get('/brands'),
+    api.get('/locations')
+    ])
+    .then(([resCat, resBrand, resLoc]) => {
+      setCategorias(Array.isArray(resCat.data) ? resCat.data : resCat.data?.data || []);
+      setMarcas(Array.isArray(resBrand.data) ? resBrand.data : resBrand.data?.data || []);
+      setUbicaciones(Array.isArray(resLoc.data) ? resLoc.data : resLoc.data?.data || []);
+    })
+    .catch(() => toast.error('Error al cargar los catálogos'));
   }, []);
+      
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -80,11 +91,8 @@ export default function NewInventoryItemPage(){
 
   // Opciones para los selects
   const opcionesCategoria = categorias.map(c => ({ value: c.id, label: c.name }));
-  const opcionesEstado = [
-    { value: 'activo', label: 'Activo' },
-    { value: 'mantenimiento', label: 'En mantenimiento' },
-    { value: 'baja', label: 'Dado de baja' },
-  ];
+  const opcionesMarca = marcas.map(m => ({ value: m.id, label: m.name }));
+  const opcionesUbicacion = ubicaciones.map(u => ({ value: u.id, label: u.name }));
 
   return(
     <DashboardLayout items={ADMIN_MENU} brandLabel="Administrador de TI" breadcrumb="Gestión de inventario" pageTitle="Registrar equipo">
@@ -136,14 +144,11 @@ export default function NewInventoryItemPage(){
                 {errores.serial_number && <p className="text-xs font-medium text-red-500 mt-1.5">{errores.serial_number[0]}</p>}
               </div>
 
-              {/*Marca*/}
+              {/*Marca (Actualizado)*/}
               <div>
-                <label className={labelBase}>Marca</label>
-                <div className="relative">
-                  <div className={iconBase}><TagIcon className="w-4 h-4" /></div>
-                  <input type="text" name="brand" value={form.brand} onChange={handleChange} className={inputBase} placeholder="Ej. HP" />
-                </div>
-                {errores.brand && <p className="text-xs font-medium text-red-500 mt-1.5">{errores.brand[0]}</p>}
+                <label className={labelBase}><TagIcon className="w-4 h-4 text-slate-400" /> Marca</label>
+                <CustomSelect options={opcionesMarca} value={form.brand_id} onChange={(val) => handleCustomChange('brand_id', val)} placeholder="Selecciona una marca" Icon={TagIcon} />
+                {errores.brand_id && <p className="text-xs font-medium text-red-500 mt-1.5">{errores.brand_id[0]}</p>}
               </div>
 
               {/*Modelo*/}
@@ -156,14 +161,11 @@ export default function NewInventoryItemPage(){
                 {errores.model && <p className="text-xs font-medium text-red-500 mt-1.5">{errores.model[0]}</p>}
               </div>
 
-              {/*Ubicación*/}
+              {/*Ubicación (Actualizado)*/}
               <div>
                 <label className={labelBase}><MapPin className="w-4 h-4 text-slate-400"/> Ubicación / Aula</label>
-                <div className="relative">
-                  <div className={iconBase}><MapPin className="w-4 h-4"/></div>
-                  <input type="text" name="location" value={form.location} onChange={handleChange} className={inputBase} placeholder="Ej. Laboratorio 1" />
-                </div>
-                {errores.location && <p className="text-xs font-medium text-red-500 mt-1.5">{errores.location[0]}</p>}
+                <CustomSelect options={opcionesUbicacion} value={form.location_id} onChange={(val) => handleCustomChange('location_id', val)} placeholder="Selecciona una ubicación" Icon={MapPin} />
+                {errores.location_id && <p className="text-xs font-medium text-red-500 mt-1.5">{errores.location_id[0]}</p>}
               </div>
 
               {/*Fecha*/}
